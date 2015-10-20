@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	fmt.Println(sssaas.Create(1, 4, "asdffdsaasdffdsaasdffdsaasdffdsaasdffdsa"))
+	fmt.Println(sssaas.Create(3, 4, "asdffdsaasdffdsaasdffdsaasdffdsaasdffdsa"))
 }

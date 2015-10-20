@@ -4,26 +4,56 @@ import (
 	"math/big"
 )
 
-func create(minimum int, shares int, secret []big.Int) [][]big.Int {
-	var result [][]big.Int = make([][]big.Int, len(secret))
+func Create(minimum int, shares int, raw string) []string {
+	var secret []*big.Int = splitByteToInt([]byte(raw))
 	prime, _ = big.NewInt(0).SetString("96911788199763998566185843021439103838446442331102965305766889944557597472419", 10)
 
-	for s := range secret {
-		var polynomial []big.Int = make([]big.Int, minimum)
-
-		polynomial[0] = secret[s]
-
-		for i := range polynomial[1:] {
-			polynomial[i] = random()
-		}
-		result[s] = polynomial
+	var polynomial [][]*big.Int = make([][]*big.Int, len(secret))
+	for i := range polynomial {
+		polynomial[i] = make([]*big.Int, minimum)
 	}
+	
+	var secrets [][][]*big.Int = make([][][]*big.Int, shares)
+	for i := range secrets {
+		secrets[i] = make([][]*big.Int, len(secret))
+		for j := range secrets[i] {
+			secrets[i][j] = make([]*big.Int, 2)
+		}
+	}
+	
+	var numbers []*big.Int = make([]*big.Int, 0)
+	
+	for s := range secret {
+		polynomial[s][0] = secret[s]
 
-	return result 
-}
-
-func Create(minimum int, shares int, raw string) []string {
-	var secret []big.Int = split([]byte(raw))
-
-	return pretty(create(minimum, shares, secret))
+		for i := range polynomial[s][1:] {
+			number := random()
+			for inNumbers(numbers, number) {
+				number = random()
+			}
+			numbers = append(numbers, number)
+			
+			polynomial[s][i+1] = number
+		}
+	}
+	
+	var result []string = make([]string, shares)
+	
+	for i := range secrets {
+		for j := range secret {
+			number := random()
+			for inNumbers(numbers, number) {
+				number = random()
+			}
+			numbers = append(numbers, number)
+			
+			secrets[i][j][0] = number
+			secrets[i][j][1] = evaluatePolynomial(polynomial[j], number)
+			
+			result[i] += " "
+		}
+	}
+	
+	
+	return result
 }
