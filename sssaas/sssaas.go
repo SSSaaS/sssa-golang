@@ -12,7 +12,7 @@ func Create(minimum int, shares int, raw string) []string {
 	for i := range polynomial {
 		polynomial[i] = make([]*big.Int, minimum)
 	}
-	
+
 	var secrets [][][]*big.Int = make([][][]*big.Int, shares)
 	for i := range secrets {
 		secrets[i] = make([][]*big.Int, len(secret))
@@ -20,9 +20,9 @@ func Create(minimum int, shares int, raw string) []string {
 			secrets[i][j] = make([]*big.Int, 2)
 		}
 	}
-	
+
 	var numbers []*big.Int = make([]*big.Int, 0)
-	
+
 	for s := range secret {
 		polynomial[s][0] = secret[s]
 
@@ -32,13 +32,13 @@ func Create(minimum int, shares int, raw string) []string {
 				number = random()
 			}
 			numbers = append(numbers, number)
-			
+
 			polynomial[s][i+1] = number
 		}
 	}
-	
+
 	var result []string = make([]string, shares)
-	
+
 	for i := range secrets {
 		for j := range secret {
 			number := random()
@@ -46,14 +46,14 @@ func Create(minimum int, shares int, raw string) []string {
 				number = random()
 			}
 			numbers = append(numbers, number)
-			
+
 			secrets[i][j][0] = number
 			secrets[i][j][1] = evaluatePolynomial(polynomial[j], number)
-			
-			result[i] += " "
+
+			result[i] += toBase64(secrets[i][j][0])
+			result[i] += toBase64(secrets[i][j][1])
 		}
 	}
-	
-	
+
 	return result
 }

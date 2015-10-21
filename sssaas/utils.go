@@ -4,14 +4,16 @@ import (
 	"math"
 	"math/big"
 	"crypto/rand"
+	"encoding/base64"
 	"encoding/hex"
+	"fmt"
 )
 
 var prime *big.Int
 
 func random() *big.Int {
 	var result *big.Int
-	result, _ = rand.Int(rand.Reader, prime.Sub(prime, big.NewInt(1))) 
+	result, _ = rand.Int(rand.Reader, prime.Sub(prime, big.NewInt(1)))
 	return result
 }
 
@@ -28,7 +30,7 @@ func splitByteToInt(secret []byte) []*big.Int {
 			copy(tmp, secret[i*32:])
 			data = hex.EncodeToString(tmp)
 		}
-		
+
 		result[i], _ = big.NewInt(0).SetString(data, 16)
 	}
 
@@ -36,13 +38,13 @@ func splitByteToInt(secret []byte) []*big.Int {
 }
 
 func evaluatePolynomial(polynomial []*big.Int, value *big.Int) *big.Int {
-	var result *big.Int = polynomial[0] 
-	
+	var result *big.Int = polynomial[0]
+
 	for s := range polynomial[1:] {
 		result = result.Add(result, result.Exp(polynomial[s+1], big.NewInt(int64(s)+1), prime))
 		result = result.Mod(result, prime)
 	}
-	
+
 	return result
 }
 
@@ -52,36 +54,23 @@ func inNumbers(numbers []*big.Int, value *big.Int) bool {
 			return true
 		}
 	}
-	
+
 	return false
 }
 
-/*
-func join(secret []bigInt) []byte {
-	var result []byte
-	for i := range secret {
-		result = append(result, secret[i]...)
+func toBase64(number *big.Int) string {
+	hexdata := fmt.Sprintf("%x", number)
+	for i := 0; len(hexdata) < 64; i++ {
+		hexdata += "0"
 	}
+	bytedata, _ := hex.DecodeString(hexdata)
+  return base64.URLEncoding.EncodeToString(bytedata)
+}
 
+func fromBase64(number string) *big.Int {
+	bytedata, _ := base64.URLEncoding.DecodeString(number)
+
+	hexdata := hex.EncodeToString(bytedata)
+  result, _ := big.NewInt(0).SetString(hexdata, 16)
 	return result
 }
-
-func chomp(array []byte) []byte {
-        last := len(array)
-        for array[last-1] == byte(0) {
-                last -= 1
-        }
-        
-        return array[0:last]
-}
-
-func pretty(shares [][]big.Int) []string {
-	var result []string = make([]string, len(shares))
-
-	for i := range shares[0] {
-		result[i] = base64.URLEncoding.EncodeToString(shares[i].String())
-	}
-
-	return result
-}
-*/
