@@ -2,6 +2,7 @@ package sssaas
 
 import (
 	"math/big"
+	"bytes"
 	"testing"
 )
 
@@ -30,6 +31,21 @@ func TestToBase64(t *testing.T) {
 		point := random()
 		if len(toBase64(point)) != 44 {
 			t.Fatal("Fatal: toBase64 returned wrong length")
+		}
+	}
+}
+
+func TestSplitMerge(t *testing.T) {
+	// Short, medium, and long tests
+	tests := [][]byte {
+		[]byte("N17FigASkL6p1EOgJhRaIquQLGvYV0"),
+		[]byte("0y10VAfmyH7GLQY6QccCSLKJi8iFgpcSBTLyYOGbiYPqOpStAf1OYuzEBzZR"),
+		[]byte("KjRHO1nHmIDidf6fKvsiXWcTqNYo2U9U8juO94EHXVqgearRISTQe0zAjkeUYYBvtcB8VWzZHYm6ktMlhOXXCfRFhbJzBUsXaHb5UDQAvs2GKy6yq0mnp8gCj98ksDlUultqygybYyHvjqR7D7EAWIKPKUVz4of8OzSjZlYg7YtCUMYhwQDryESiYabFID1PKBfKn5WSGgJBIsDw5g2HB2AqC1r3K8GboDN616Swo6qjvSFbseeETCYDB3ikS7uiK67ErIULNqVjf7IKoOaooEhQACmZ5HdWpr34tstg18rO"),
+	}
+
+	for i := range(tests) {
+		if (bytes.Equal(mergeIntToByte(splitByteToInt(tests[i])), tests[i])) {
+			t.Fatal("Fatal: splitting and merging returned invalid data")
 		}
 	}
 }
