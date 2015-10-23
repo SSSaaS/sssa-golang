@@ -41,7 +41,9 @@ func evaluatePolynomial(polynomial []*big.Int, value *big.Int) *big.Int {
 	var result *big.Int = big.NewInt(0).Set(polynomial[0])
 
 	for s := range polynomial[1:] {
-		result = result.Add(result, result.Exp(polynomial[s+1], big.NewInt(int64(s)+1), prime))
+		fmt.Println("s: ", s)
+		tmp := result.Exp(big.NewInt(0).Set(polynomial[s+1]), big.NewInt(int64(s)+1), prime)
+		result = result.Add(result, tmp)
 		result = result.Mod(result, prime)
 	}
 
