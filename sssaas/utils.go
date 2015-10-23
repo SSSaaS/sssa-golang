@@ -80,9 +80,19 @@ func fromBase64(number string) *big.Int {
 	return result
 }
 
-func modInverse(number *big.Int) {
+func modInverse(number *big.Int) *big.Int {
 	copy := big.NewInt(0).Set(number)
 	copy = copy.Mod(copy, prime)
+	x := big.NewInt(0)
+	y := big.NewInt(0)
 
+	if copy.Cmp(big.NewInt(0)) == -1 {
+		copy = copy.Mul(copy, big.NewInt(-1))
+	}
 
+	_ = copy.GCD(x, y, prime, copy)
+	result := big.NewInt(0)
+	result = result.Add(prime, y)
+	result = result.Mod(result, prime)
+	return result
 }

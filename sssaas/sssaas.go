@@ -88,32 +88,63 @@ func Combine(shares []string) string {
 	for j := range secret {
 		secret[j] = big.NewInt(0)
 		for i := range secrets {
-			x := secrets[i][j][0]
-			y := secrets[i][j][1]
-			lagrange := big.NewInt(0)
-			first := true
+			origin := secrets[i][j][0]
+			originy := secrets[i][j][1]
+			numerator := big.NewInt(1)
+			denominator := big.NewInt(1)
 			for k := range secrets {
 				if k != i {
-					value := big.NewInt(0)
-					numerator := big.NewInt(0)
-					denominator := big.NewInt(0).Set(x)
-					numerator = numerator.Sub(value, secrets[k][j][0])
-					denominator = denominator.Sub(denominator, secrets[k][j][0])
-					value, _ = value.DivMod(numerator, denominator, prime)
-					if first {
-						lagrange = big.NewInt(0).Set(value)
-						lagrange = lagrange.Mod(lagrange, prime)
-					} else {
-						lagrange = lagrange.Mul(lagrange, value)
-						lagrange = lagrange.Mod(lagrange, prime)
-					}
+					current := secrets[k][j][0]
+					fmt.Println("current: ", current)
+					negative := big.NewInt(0)
+					negative = negative.Mul(current, big.NewInt(-1))
+					fmt.Println("negative: ", negative)
+					added := big.NewInt(0)
+					added = added.Sub(origin, current)
+					fmt.Println("subtracted: ", added)
+
+					fmt.Println("Numerator0: ", numerator)
+					numerator = numerator.Mul(numerator, negative)
+					fmt.Println("Numerator1: ", numerator)
+					numerator = numerator.Mod(numerator, prime)
+					fmt.Println("Numerator2: ", numerator)
+
+					fmt.Println("denominator0: ", denominator)
+					denominator = denominator.Mul(denominator, added)
+					fmt.Println("denominator1: ", denominator)
+					denominator = denominator.Mod(denominator, prime)
+					fmt.Println("denominator2: ", denominator)
+					fmt.Println("current: ", current)
+					fmt.Println("prime: ", prime)
+					fmt.Println("negative: ", negative)
+					fmt.Println("added: ", added)
+					fmt.Println("")
 				}
 			}
-			lagrange = lagrange.Mul(lagrange, y)
-			lagrange = lagrange.Mod(lagrange, prime)
-			fmt.Println("La: ", lagrange.String())
-			secret[j] = secret[j].Add(secret[j], lagrange)
+
+			fmt.Println("originy: ", originy)
+			working := big.NewInt(0).Set(originy)
+			fmt.Println("working: ", working)
+			fmt.Println("Numerator: ", numerator)
+			working = working.Mul(working, numerator)
+			fmt.Println("working: ", working)
+			fmt.Println("Denominator: ", denominator)
+			fmt.Println("Inverse: ", modInverse(denominator))
+			test := big.NewInt(0).Set(denominator)
+			test = test.Mul(test, modInverse(denominator))
+			test = test.Mod(test, prime)
+			fmt.Println("test: ", test)
+			working = working.Mul(working, modInverse(denominator))
+			fmt.Println("working: ", working)
+			fmt.Println("prime: ", prime)
+			working = working.Add(working, prime)
+			fmt.Println("working: ", working)
+
+			fmt.Println("secret: ", secret[j])
+			secret[j] = secret[j].Add(secret[j], working)
+			fmt.Println("secret: ", secret[j])
 			secret[j] = secret[j].Mod(secret[j], prime)
+			fmt.Println("secret: ", secret[j])
 		}
 	}
 
