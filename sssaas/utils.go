@@ -79,3 +79,10 @@ func fromBase64(number string) *big.Int {
   result, _ := big.NewInt(0).SetString(hexdata, 16)
 	return result
 }
+
+func modInverse(number *big.Int) {
+	copy := big.NewInt(0).Set(number)
+	copy = copy.Mod(copy, prime)
+
+
+}

@@ -73,7 +73,7 @@ func Combine(shares []string) string {
 		}
 
 		share := shares[i]
-		count := len(share)/88.0
+		count := len(share)/88
 		secrets[i] = make([][]*big.Int, count)
 
 		for j := range secrets[i] {
