@@ -1,7 +1,6 @@
 package sssaas
 
 import (
-	"fmt"
 	"math/big"
 )
 
@@ -13,8 +12,6 @@ func Create(minimum int, shares int, raw string) []string {
 	var secret []*big.Int = splitByteToInt([]byte(raw))
 	prime, _ = big.NewInt(0).SetString("99995644905598542077721161034987774965417302630805822064337798850767846245779", 10)
 	var numbers []*big.Int = make([]*big.Int, 0)
-
-	fmt.Println(secret)
 
 	var polynomial [][]*big.Int = make([][]*big.Int, len(secret))
 	for i := range polynomial {
@@ -53,10 +50,6 @@ func Create(minimum int, shares int, raw string) []string {
 		}
 	}
 
-	fmt.Println("secrets:", secrets)
-
-	fmt.Println("Result: ", result)
-
 	return result
 }
 
@@ -86,8 +79,6 @@ func Combine(shares []string) string {
 		}
 	}
 
-	fmt.Println("secrets", secrets)
-
 	var secret []*big.Int = make([]*big.Int, len(secrets[0]))
 	for j := range secret {
 		secret[j] = big.NewInt(0)
@@ -99,60 +90,28 @@ func Combine(shares []string) string {
 			for k := range secrets {
 				if k != i {
 					current := secrets[k][j][0]
-					fmt.Println("current: ", current)
 					negative := big.NewInt(0)
 					negative = negative.Mul(current, big.NewInt(-1))
-					fmt.Println("negative: ", negative)
 					added := big.NewInt(0)
 					added = added.Sub(origin, current)
-					fmt.Println("subtracted: ", added)
 
-					fmt.Println("Numerator0: ", numerator)
 					numerator = numerator.Mul(numerator, negative)
-					fmt.Println("Numerator1: ", numerator)
 					numerator = numerator.Mod(numerator, prime)
-					fmt.Println("Numerator2: ", numerator)
 
-					fmt.Println("denominator0: ", denominator)
 					denominator = denominator.Mul(denominator, added)
-					fmt.Println("denominator1: ", denominator)
 					denominator = denominator.Mod(denominator, prime)
-					fmt.Println("denominator2: ", denominator)
-					fmt.Println("current: ", current)
-					fmt.Println("prime: ", prime)
-					fmt.Println("negative: ", negative)
-					fmt.Println("added: ", added)
-					fmt.Println("")
 				}
 			}
 
-			fmt.Println("originy: ", originy)
 			working := big.NewInt(0).Set(originy)
-			fmt.Println("working: ", working)
-			fmt.Println("Numerator: ", numerator)
 			working = working.Mul(working, numerator)
-			fmt.Println("working: ", working)
-			fmt.Println("Denominator: ", denominator)
-			fmt.Println("Inverse: ", modInverse(denominator))
-			test := big.NewInt(0).Set(denominator)
-			test = test.Mul(test, modInverse(denominator))
-			test = test.Mod(test, prime)
-			fmt.Println("test: ", test)
 			working = working.Mul(working, modInverse(denominator))
-			fmt.Println("working: ", working)
-			fmt.Println("prime: ", prime)
 			working = working.Add(working, prime)
-			fmt.Println("working: ", working)
 
-			fmt.Println("secret: ", secret[j])
 			secret[j] = secret[j].Add(secret[j], working)
-			fmt.Println("secret: ", secret[j])
 			secret[j] = secret[j].Mod(secret[j], prime)
-			fmt.Println("secret: ", secret[j])
 		}
 	}
 
-	fmt.Println("Secret: ", secret)
-
-	return "Hi!"
+	return string(mergeIntToByte(secret))
 }

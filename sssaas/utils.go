@@ -12,8 +12,9 @@ import (
 var prime *big.Int
 
 func random() *big.Int {
-	var result *big.Int
-	result, _ = rand.Int(rand.Reader, prime.Sub(prime, big.NewInt(1)))
+	result := big.NewInt(0).Set(prime)
+	result = result.Sub(result, big.NewInt(1))
+	result, _ = rand.Int(rand.Reader, result)
 	return result
 }
 
@@ -32,6 +33,16 @@ func splitByteToInt(secret []byte) []*big.Int {
 		}
 
 		result[i], _ = big.NewInt(0).SetString(data, 16)
+	}
+
+	return result
+}
+
+func mergeIntToByte(secret []*big.Int) []byte {
+	var result []byte
+	for i := range secret {
+		tmp, _ := hex.DecodeString(fmt.Sprintf("%x", secret[i]))
+		result = append(result, tmp...)
 	}
 
 	return result
@@ -85,16 +96,29 @@ func fromBase64(number string) *big.Int {
 func modInverse(number *big.Int) *big.Int {
 	copy := big.NewInt(0).Set(number)
 	copy = copy.Mod(copy, prime)
+	pcopy := big.NewInt(0).Set(prime)
 	x := big.NewInt(0)
 	y := big.NewInt(0)
+	negative := false
 
 	if copy.Cmp(big.NewInt(0)) == -1 {
+		negative = true
 		copy = copy.Mul(copy, big.NewInt(-1))
 	}
 
-	_ = copy.GCD(x, y, prime, copy)
-	result := big.NewInt(0)
-	result = result.Add(prime, y)
+	gcd := copy.GCD(x, y, pcopy, copy)
+
+	if gcd.Cmp(big.NewInt(1)) != 0 {
+		fmt.Println("Broken GCD!")
+	}
+
+	result := big.NewInt(0).Set(prime)
+
+	if negative {
+		y = y.Mul(y, big.NewInt(-1))
+	}
+
+	result = result.Add(result, y)
 	result = result.Mod(result, prime)
 	return result
 }
