@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	shares := sssaas.Create(3, 4, "asdf")
+	shares := sssaas.Create(1, 2, "asdf")
 	fmt.Println("Shares: ", shares)
 	fmt.Println(sssaas.Combine(shares))
 }

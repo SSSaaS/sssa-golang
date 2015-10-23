@@ -1,12 +1,12 @@
 package sssaas
 
 import (
-	"math/big"
 	"fmt"
+	"math/big"
 )
 
 func Create(minimum int, shares int, raw string) []string {
-	if (minimum > shares) {
+	if minimum > shares {
 		return []string{""}
 	}
 
@@ -53,7 +53,9 @@ func Create(minimum int, shares int, raw string) []string {
 		}
 	}
 
-	fmt.Println("Secrets: ", result)
+	fmt.Println("secrets:", secrets)
+
+	fmt.Println("Result: ", result)
 
 	return result
 }
@@ -73,16 +75,18 @@ func Combine(shares []string) string {
 		}
 
 		share := shares[i]
-		count := len(share)/88
+		count := len(share) / 88
 		secrets[i] = make([][]*big.Int, count)
 
 		for j := range secrets[i] {
-			cshare := share[j*88:(j+1)*88]
+			cshare := share[j*88 : (j+1)*88]
 			secrets[i][j] = make([]*big.Int, 2)
 			secrets[i][j][0] = fromBase64(cshare[0:44])
 			secrets[i][j][1] = fromBase64(cshare[44:])
 		}
 	}
+
+	fmt.Println("secrets", secrets)
 
 	var secret []*big.Int = make([]*big.Int, len(secrets[0]))
 	for j := range secret {
