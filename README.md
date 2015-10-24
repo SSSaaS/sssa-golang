@@ -1,3 +1,3 @@
-# sssaas-golang
+# sss-golang
 
-sssaas-golang
+sss-golang

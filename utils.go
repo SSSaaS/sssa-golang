@@ -1,4 +1,4 @@
-package sssaas
+package sss
 
 import (
 	"crypto/rand"
