@@ -1,4 +1,4 @@
-package sss
+package sssa
 
 import (
 	"crypto/rand"
