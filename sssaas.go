@@ -13,6 +13,8 @@ func Create(minimum int, shares int, raw string) []string {
 	prime, _ = big.NewInt(0).SetString("99995644905598542077721161034987774965417302630805822064337798850767846245779", 10)
 	var numbers []*big.Int = make([]*big.Int, 0)
 
+	numbers = append(numbers, big.NewInt(0))
+
 	var polynomial [][]*big.Int = make([][]*big.Int, len(secret))
 	for i := range polynomial {
 		polynomial[i] = make([]*big.Int, minimum)
@@ -63,7 +65,7 @@ func Combine(shares []string) string {
 	prime, _ = big.NewInt(0).SetString("99995644905598542077721161034987774965417302630805822064337798850767846245779", 10)
 
 	for i := range shares {
-		if (len(shares[i]) % 44) != 0 {
+		if (len(shares[i]) % 88) != 0 {
 			return ""
 		}
 
