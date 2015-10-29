@@ -167,7 +167,6 @@ func Combine(shares []string) string {
 			working := big.NewInt(0).Set(originy)
 			working = working.Mul(working, numerator)
 			working = working.Mul(working, modInverse(denominator))
-			working = working.Add(working, prime)
 
 			// LPI sum
 			secret[j] = secret[j].Add(secret[j], working)
