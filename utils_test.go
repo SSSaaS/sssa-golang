@@ -1,8 +1,8 @@
 package sssa
 
 import (
-	"math/big"
 	"bytes"
+	"math/big"
 	"testing"
 )
 
@@ -37,14 +37,14 @@ func TestToBase64(t *testing.T) {
 
 func TestSplitMerge(t *testing.T) {
 	// Short, medium, and long tests
-	tests := [][]byte {
+	tests := [][]byte{
 		[]byte("N17FigASkL6p1EOgJhRaIquQLGvYV0"),
 		[]byte("0y10VAfmyH7GLQY6QccCSLKJi8iFgpcSBTLyYOGbiYPqOpStAf1OYuzEBzZR"),
 		[]byte("KjRHO1nHmIDidf6fKvsiXWcTqNYo2U9U8juO94EHXVqgearRISTQe0zAjkeUYYBvtcB8VWzZHYm6ktMlhOXXCfRFhbJzBUsXaHb5UDQAvs2GKy6yq0mnp8gCj98ksDlUultqygybYyHvjqR7D7EAWIKPKUVz4of8OzSjZlYg7YtCUMYhwQDryESiYabFID1PKBfKn5WSGgJBIsDw5g2HB2AqC1r3K8GboDN616Swo6qjvSFbseeETCYDB3ikS7uiK67ErIULNqVjf7IKoOaooEhQACmZ5HdWpr34tstg18rO"),
 	}
 
-	for i := range(tests) {
-		if (bytes.Equal(mergeIntToByte(splitByteToInt(tests[i])), tests[i])) {
+	for i := range tests {
+		if bytes.Equal(mergeIntToByte(splitByteToInt(tests[i])), tests[i]) {
 			t.Fatal("Fatal: splitting and merging returned invalid data")
 		}
 	}
@@ -72,24 +72,24 @@ func TestModInverse(t *testing.T) {
 }
 
 func TestEvaluatePolynomial(t *testing.T) {
-	values := [][][]*big.Int {
+	values := [][][]*big.Int{
 		[][]*big.Int{
-			[]*big.Int{big.NewInt(20), big.NewInt(21), big.NewInt(42),},
+			[]*big.Int{big.NewInt(20), big.NewInt(21), big.NewInt(42)},
 			[]*big.Int{big.NewInt(0)},
 		},
 		[][]*big.Int{
-			[]*big.Int{big.NewInt(0), big.NewInt(0), big.NewInt(0),},
-			[]*big.Int{big.NewInt(4),},
+			[]*big.Int{big.NewInt(0), big.NewInt(0), big.NewInt(0)},
+			[]*big.Int{big.NewInt(4)},
 		},
 		[][]*big.Int{
-			[]*big.Int{big.NewInt(1), big.NewInt(2), big.NewInt(3), big.NewInt(4), big.NewInt(5),},
-			[]*big.Int{big.NewInt(10),},
+			[]*big.Int{big.NewInt(1), big.NewInt(2), big.NewInt(3), big.NewInt(4), big.NewInt(5)},
+			[]*big.Int{big.NewInt(10)},
 		},
 	}
 
 	actual := []*big.Int{big.NewInt(20), big.NewInt(0), big.NewInt(54321)}
 
-	for i := range(values) {
+	for i := range values {
 		result := evaluatePolynomial(values[i][0], values[i][1][0])
 		if result.Cmp(actual[i]) != 0 {
 			t.Fatalf("Fatal: EvaluatePolynomial[%v] failed\nExpected: %v; Got: %v\n", i, actual[i], result)

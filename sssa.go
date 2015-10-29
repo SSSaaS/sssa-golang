@@ -24,7 +24,6 @@ func Create(minimum int, shares int, raw string) []string {
 	// Set constant prime across the package
 	prime, _ = big.NewInt(0).SetString("115792089237316195423570985008687907853269984665640564039457584007913129639747", 10)
 
-
 	// List of currently used numbers in the polynomial
 	var numbers []*big.Int = make([]*big.Int, 0)
 	numbers = append(numbers, big.NewInt(0))
@@ -142,7 +141,7 @@ func Combine(shares []string) string {
 			// ...remember the current x and y values...
 			origin := secrets[i][j][0]
 			originy := secrets[i][j][1]
-			numerator := big.NewInt(1) // LPI numerator
+			numerator := big.NewInt(1)   // LPI numerator
 			denominator := big.NewInt(1) // LPI denominator
 			// ...and for every other point...
 			for k := range secrets { // LPI product loop
