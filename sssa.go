@@ -4,6 +4,11 @@ import (
 	"math/big"
 )
 
+/**
+ * Returns a new arary of secret shares (encoding x,y pairs as base64 strings)
+ * created by Shamir's Secret Sharing Algorithm requring a minimum number of
+ * share to recreate, of length shares, from the input secret raw as a string
+**/
 func Create(minimum int, shares int, raw string) []string {
 	if minimum > shares {
 		return []string{""}
@@ -56,6 +61,10 @@ func Create(minimum int, shares int, raw string) []string {
 }
 
 /**
+ * Takes a string array of shares encoded in base64 created via Shamir's
+ * Algorithm; each string must be of equal length of a multiple of 88 characters
+ * as a single 88 character share is a pair of 256-bit numbers (x, y). 
+ *
  * Note: the polynomial will converge if the specified minimum number of shares
  *       or more are passed to this function. Passing thus does not affect it
  *       Passing fewer however, simply means that the returned secret is wrong.
