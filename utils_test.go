@@ -70,3 +70,29 @@ func TestModInverse(t *testing.T) {
 		}
 	}
 }
+
+func TestEvaluatePolynomial(t *testing.T) {
+	values := [][][]*big.Int {
+		[][]*big.Int{
+			[]*big.Int{big.NewInt(20), big.NewInt(21), big.NewInt(42),},
+			[]*big.Int{big.NewInt(0)},
+		},
+		[][]*big.Int{
+			[]*big.Int{big.NewInt(0), big.NewInt(0), big.NewInt(0),},
+			[]*big.Int{big.NewInt(4),},
+		},
+		[][]*big.Int{
+			[]*big.Int{big.NewInt(1), big.NewInt(2), big.NewInt(3), big.NewInt(4), big.NewInt(5),},
+			[]*big.Int{big.NewInt(10),},
+		},
+	}
+
+	actual := []*big.Int{big.NewInt(20), big.NewInt(0), big.NewInt(54321)}
+
+	for i := range(values) {
+		result := evaluatePolynomial(values[i][0], values[i][1][0])
+		if result.Cmp(actual[i]) != 0 {
+			t.Fatalf("Fatal: EvaluatePolynomial[%v] failed\nExpected: %v; Got: %v\n", i, actual[i], result)
+		}
+	}
+}
