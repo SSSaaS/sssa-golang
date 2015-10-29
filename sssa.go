@@ -22,7 +22,7 @@ func Create(minimum int, shares int, raw string) []string {
 	var secret []*big.Int = splitByteToInt([]byte(raw))
 
 	// Set constant prime across the package
-	prime, _ = big.NewInt(0).SetString("99995644905598542077721161034987774965417302630805822064337798850767846245779", 10)
+	prime, _ = big.NewInt(0).SetString("115792089237316195423570985008687907853269984665640564039457584007913129639747", 10)
 
 
 	// List of currently used numbers in the polynomial
@@ -108,7 +108,7 @@ func Combine(shares []string) string {
 	var secrets [][][]*big.Int = make([][][]*big.Int, len(shares))
 
 	// Set constant prime
-	prime, _ = big.NewInt(0).SetString("99995644905598542077721161034987774965417302630805822064337798850767846245779", 10)
+	prime, _ = big.NewInt(0).SetString("115792089237316195423570985008687907853269984665640564039457584007913129639747", 10)
 
 	// For each share...
 	for i := range shares {

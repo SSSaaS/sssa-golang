@@ -7,7 +7,7 @@ import (
 )
 
 func TestRandom(t *testing.T) {
-	prime, _ = big.NewInt(0).SetString("99995644905598542077721161034987774965417302630805822064337798850767846245779", 10)
+	prime, _ = big.NewInt(0).SetString("115792089237316195423570985008687907853269984665640564039457584007913129639747", 10)
 	for i := 0; i < 10000; i++ {
 		if random().Cmp(prime) >= 0 {
 			t.Fatal("Error! Random number out of bounds exception")
@@ -16,7 +16,7 @@ func TestRandom(t *testing.T) {
 }
 
 func TestBaseConversion(t *testing.T) {
-	prime, _ = big.NewInt(0).SetString("99995644905598542077721161034987774965417302630805822064337798850767846245779", 10)
+	prime, _ = big.NewInt(0).SetString("115792089237316195423570985008687907853269984665640564039457584007913129639747", 10)
 	for i := 0; i < 10000; i++ {
 		point := random()
 		if point.Cmp(fromBase64(toBase64(point))) != 0 {
@@ -26,7 +26,7 @@ func TestBaseConversion(t *testing.T) {
 }
 
 func TestToBase64(t *testing.T) {
-	prime, _ = big.NewInt(0).SetString("99995644905598542077721161034987774965417302630805822064337798850767846245779", 10)
+	prime, _ = big.NewInt(0).SetString("115792089237316195423570985008687907853269984665640564039457584007913129639747", 10)
 	for i := 0; i < 10000; i++ {
 		point := random()
 		if len(toBase64(point)) != 44 {
@@ -51,7 +51,7 @@ func TestSplitMerge(t *testing.T) {
 }
 
 func TestModInverse(t *testing.T) {
-	prime, _ = big.NewInt(0).SetString("99995644905598542077721161034987774965417302630805822064337798850767846245779", 10)
+	prime, _ = big.NewInt(0).SetString("115792089237316195423570985008687907853269984665640564039457584007913129639747", 10)
 	for i := 0; i < 10000; i++ {
 		point := big.NewInt(0).Set(random())
 		if point.Cmp(prime) >= 0 {
