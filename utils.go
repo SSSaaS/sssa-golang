@@ -1,6 +1,7 @@
 package sssa
 
 import (
+	"bytes"
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/hex"
@@ -8,7 +9,6 @@ import (
 	"math"
 	"math/big"
 	"strings"
-	"bytes"
 )
 
 var prime *big.Int
@@ -30,7 +30,7 @@ func random() *big.Int {
 **/
 func splitByteToInt(secret []byte) []*big.Int {
 	hex_data := hex.EncodeToString(secret)
-	count := int(math.Ceil(float64(len(hex_data))/64.0))
+	count := int(math.Ceil(float64(len(hex_data)) / 64.0))
 
 	result := make([]*big.Int, count)
 
@@ -38,7 +38,7 @@ func splitByteToInt(secret []byte) []*big.Int {
 		if (i+1)*64 < len(hex_data) {
 			result[i], _ = big.NewInt(0).SetString(hex_data[i*64:(i+1)*64], 16)
 		} else {
-			data := strings.Join([]string{hex_data[i*64:], strings.Repeat("0", 64 - (len(hex_data) - i*64))}, "")
+			data := strings.Join([]string{hex_data[i*64:], strings.Repeat("0", 64-(len(hex_data)-i*64))}, "")
 			result[i], _ = big.NewInt(0).SetString(data, 16)
 		}
 	}
@@ -54,7 +54,7 @@ func mergeIntToByte(secret []*big.Int) []byte {
 	var hex_data = ""
 	for i := range secret {
 		tmp := fmt.Sprintf("%x", secret[i])
-		hex_data += strings.Join([]string{strings.Repeat("0", (64-len(tmp))), tmp}, "")
+		hex_data += strings.Join([]string{strings.Repeat("0", (64 - len(tmp))), tmp}, "")
 	}
 
 	result, _ := hex.DecodeString(hex_data)
