@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"math"
 	"math/big"
+	"strings"
+	"bytes"
 )
 
 var prime *big.Int
@@ -27,20 +29,18 @@ func random() *big.Int {
  * significant bit is zero.
 **/
 func splitByteToInt(secret []byte) []*big.Int {
-	count := int(math.Ceil(float64(len(secret)) / 32))
+	hex_data := hex.EncodeToString(secret)
+	count := int(math.Ceil(float64(len(hex_data))/64.0))
 
-	var result []*big.Int = make([]*big.Int, count)
-	for i := range result {
-		data := ""
-		if (i+1)*32 < len(secret) {
-			data = hex.EncodeToString(secret[i*32 : (i+1)*32])
+	result := make([]*big.Int, count)
+
+	for i := 0; i < count; i++ {
+		if (i+1)*64 < len(hex_data) {
+			result[i], _ = big.NewInt(0).SetString(hex_data[i*64:(i+1)*64], 16)
 		} else {
-			tmp := make([]byte, 32)
-			copy(tmp, secret[i*32:])
-			data = hex.EncodeToString(tmp)
+			data := strings.Join([]string{hex_data[i*64:], strings.Repeat("0", 64 - (len(hex_data) - i*64))}, "")
+			result[i], _ = big.NewInt(0).SetString(data, 16)
 		}
-
-		result[i], _ = big.NewInt(0).SetString(data, 16)
 	}
 
 	return result
@@ -51,11 +51,14 @@ func splitByteToInt(secret []byte) []*big.Int {
  * least significant nulls
 **/
 func mergeIntToByte(secret []*big.Int) []byte {
-	var result []byte
+	var hex_data = ""
 	for i := range secret {
-		tmp, _ := hex.DecodeString(fmt.Sprintf("%x", secret[i]))
-		result = append(result, tmp...)
+		tmp := fmt.Sprintf("%x", secret[i])
+		hex_data += strings.Join([]string{strings.Repeat("0", (64-len(tmp))), tmp}, "")
 	}
+
+	result, _ := hex.DecodeString(hex_data)
+	result = bytes.TrimRight(result, "\x00")
 
 	return result
 }

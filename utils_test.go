@@ -44,8 +44,25 @@ func TestSplitMerge(t *testing.T) {
 	}
 
 	for i := range tests {
-		if bytes.Equal(mergeIntToByte(splitByteToInt(tests[i])), tests[i]) {
-			t.Fatal("Fatal: splitting and merging returned invalid data")
+		result := mergeIntToByte(splitByteToInt(tests[i]))
+		if !bytes.Equal(result, tests[i]) {
+			t.Fatal("Fatal: splitting and merging returned invalid data: ", result, tests[i])
+		}
+	}
+}
+
+func TestSplitMergeOdds(t *testing.T) {
+	// Short, medium, and long tests
+	tests := [][]byte{
+		[]byte("a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00a"),
+		[]byte("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa哈囉世界"),
+		[]byte("こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界こんにちは、世界"),
+	}
+
+	for i := range tests {
+		result := mergeIntToByte(splitByteToInt(tests[i]))
+		if !bytes.Equal(result, tests[i]) {
+			t.Fatal("Fatal: splitting and merging returned invalid data on test", i)
 		}
 	}
 }
