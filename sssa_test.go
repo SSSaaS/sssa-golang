@@ -16,7 +16,7 @@ func TestCreateCombine(t *testing.T) {
 	shares := []int{5, 100, 100}
 
 	for i := range strings {
-		if Combine(Create(minimum[i], shares[i], strings[i])) == strings[i] {
+		if Combine(Create(minimum[i], shares[i], strings[i])) != strings[i] {
 			t.Fatal("Fatal: creating and combining returned invalid data")
 		}
 	}
