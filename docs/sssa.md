@@ -1,10 +1,13 @@
-# SSSA - Ruby
+# SSSA - Golang
+## Package
+    sssa
+
 ## Constants
     prime = 115792089237316195423570985008687907853269984665640564039457584007913129639747
-        Safe Prime; big.Int
+        Safe Prime; big.Int; not exported
 
 ## Functions
-    create(minimum int, number int, raw string)
+    Create(minimum int, number int, raw string)
         minimum - number of shares required to recreate the secret
         number - total number of shares to generate
         raw - secret to protect, as a string
@@ -12,7 +15,7 @@
         returns shares as an array of base64 strings of variable length
             dependent on the size of the raw secret
 
-    combine(shares []string)
+    Combine(shares []string)
         shares - array of base64 strings returned by create function
 
         returns a string of secret
