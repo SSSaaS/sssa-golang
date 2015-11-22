@@ -1,4 +1,6 @@
 # sssa-golang
+[![Build Status](https://travis-ci.org/SSSaaS/sssa-golang.svg?branch=master)](https://travis-ci.org/SSSaaS/sssa-golang)
+
 An implementation of Shamir's Secret Sharing Algorithm in Go  
 
     Copyright (C) 2015 Alexander Scheel, Joel May, Matthew Burket  
