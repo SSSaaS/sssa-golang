@@ -3,4 +3,5 @@ image: golang:latest
 tests:
   script:
     - go test
-  tag: go
+  tags:
+    - go
