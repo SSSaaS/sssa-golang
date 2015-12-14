@@ -3,5 +3,3 @@ image: golang:latest
 tests:
   script:
     - go test
-  tags:
-    - go
