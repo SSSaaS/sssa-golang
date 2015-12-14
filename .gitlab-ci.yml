@@ -1,5 +1,6 @@
-image: go:latest
+image: golang:latest
 
 tests:
   script:
     - go test
+  tag: go
