@@ -69,13 +69,12 @@ func mergeIntToByte(secret []*big.Int) []byte {
  * 		returns a + bx + cx^2 + dx^3
 **/
 func evaluatePolynomial(polynomial []*big.Int, value *big.Int) *big.Int {
-	var result *big.Int = big.NewInt(0).Set(polynomial[0])
+	last := len(polynomial) - 1
+	var result *big.Int = big.NewInt(0).Set(polynomial[last])
 
-	for s := range polynomial[1:] {
-		tmp := big.NewInt(0).Set(value)
-		tmp = tmp.Exp(tmp, big.NewInt(int64(s)+1), prime)
-		tmp = tmp.Mul(tmp, polynomial[s+1])
-		result = result.Add(result, tmp)
+	for s := last - 1; s >= 0; s-- {
+		result = result.Mul(result, value)
+		result = result.Add(result, polynomial[s])
 		result = result.Mod(result, prime)
 	}
 
