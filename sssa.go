@@ -112,7 +112,7 @@ func Combine(shares []string) string {
 	// For each share...
 	for i := range shares {
 		// ...ensure that it is valid...
-		if (len(shares[i]) % 88) != 0 {
+		if IsValidShare(shares[i]) == false {
 			return ""
 		}
 
@@ -175,4 +175,30 @@ func Combine(shares []string) string {
 
 	// ...and return the result!
 	return string(mergeIntToByte(secret))
+}
+
+/**
+ * Takes in a given string to check if it is a valid secret
+ *
+ * Requirements:
+ * 	Length multiple of 88
+ *	Can decode each 44 character block as base64
+ *
+ * Returns only success/failure
+**/
+func IsValidShare(candidate string) bool {
+	if len(candidate) % 88 != 0 {
+		return false
+	}
+
+	count := len(candidate) / 44
+	for j := 0; j < count; j++ {
+		part := candidate[j*44 : (j+1)*44]
+		decode := fromBase64(part)
+		if decode.Cmp(big.NewInt(0)) == -1 || decode.Cmp(prime) == 1 {
+			return false
+		}
+	}
+
+	return true
 }

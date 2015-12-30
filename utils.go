@@ -116,12 +116,22 @@ func toBase64(number *big.Int) string {
 /**
  * Returns the number base64 in base 10 big.Int representation; note: this is
  * not coming from a string representation; the base64 input is exactly 256
- * bits long, and the output is an arbitrary size base 10 integer
+ * bits long, and the output is an arbitrary size base 10 integer.
+ *
+ * Returns -1 on failure
 **/
 func fromBase64(number string) *big.Int {
-	bytedata, _ := base64.URLEncoding.DecodeString(number)
+	bytedata, err := base64.URLEncoding.DecodeString(number)
+	if err != nil {
+		return big.NewInt(-1)
+	}
+
 	hexdata := hex.EncodeToString(bytedata)
-	result, _ := big.NewInt(0).SetString(hexdata, 16)
+	result, ok := big.NewInt(0).SetString(hexdata, 16)
+	if ok == false {
+		return big.NewInt(-1)
+	}
+
 	return result
 }
 
