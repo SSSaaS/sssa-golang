@@ -21,3 +21,8 @@
         returns a string of secret
             note: this string can be ill-formatted utf8 potentially, if the
             minimum number of shares was not met
+
+    IsValidShare(candidate string)
+        candidate - candidate to check whether or not a valid share
+
+        returns a boolean of validity
