@@ -184,7 +184,7 @@ func Combine(shares []string) string {
  * 	Length multiple of 88
  *	Can decode each 44 character block as base64
  *
- * Returns only success/failure
+ * Returns only success/failure (bool)
 **/
 func IsValidShare(candidate string) bool {
 	// Set constant prime across the package
