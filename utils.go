@@ -137,7 +137,7 @@ func fromBase64(number string) *big.Int {
 
 /**
  * Computes the multiplicative inverse of the number on the field prime; more
- * specifically, number * inverse == 1; Note: number should neve rbe zero
+ * specifically, number * inverse == 1; Note: number should never be zero
 **/
 func modInverse(number *big.Int) *big.Int {
 	copy := big.NewInt(0).Set(number)

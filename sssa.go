@@ -1,6 +1,7 @@
 package sssa
 
 import (
+	"errors"
 	"math/big"
 )
 
@@ -9,13 +10,12 @@ import (
  * created by Shamir's Secret Sharing Algorithm requring a minimum number of
  * share to recreate, of length shares, from the input secret raw as a string
 **/
-func Create(minimum int, shares int, raw string) []string {
+func Create(minimum int, shares int, raw string) ([]string, error) {
 	// Verify minimum isn't greater than shares; there is no way to recreate
 	// the original polynomial in our current setup, therefore it doesn't make
 	// sense to generate fewer shares than are needed to reconstruct the secret.
-	// [TODO]: proper error handling
 	if minimum > shares {
-		return []string{""}
+		return []string{""}, errors.New("cannot require more shares then existing")
 	}
 
 	// Convert the secret to its respective 256-bit big.Int representation
@@ -89,7 +89,7 @@ func Create(minimum int, shares int, raw string) []string {
 	}
 
 	// ...and return!
-	return result
+	return result, nil
 }
 
 /**
@@ -101,7 +101,7 @@ func Create(minimum int, shares int, raw string) []string {
  *       or more are passed to this function. Passing thus does not affect it
  *       Passing fewer however, simply means that the returned secret is wrong.
 **/
-func Combine(shares []string) string {
+func Combine(shares []string) (string, error) {
 	// Recreate the original object of x, y points, based upon number of shares
 	// and size of each share (number of parts in the secret).
 	var secrets [][][]*big.Int = make([][][]*big.Int, len(shares))
@@ -113,7 +113,7 @@ func Combine(shares []string) string {
 	for i := range shares {
 		// ...ensure that it is valid...
 		if IsValidShare(shares[i]) == false {
-			return ""
+			return "", errors.New("one of the shares is invalid")
 		}
 
 		// ...find the number of parts it represents...
@@ -174,7 +174,7 @@ func Combine(shares []string) string {
 	}
 
 	// ...and return the result!
-	return string(mergeIntToByte(secret))
+	return string(mergeIntToByte(secret)), nil
 }
 
 /**
