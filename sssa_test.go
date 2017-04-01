@@ -16,8 +16,16 @@ func TestCreateCombine(t *testing.T) {
 	shares := []int{5, 100, 100}
 
 	for i := range strings {
-		if Combine(Create(minimum[i], shares[i], strings[i])) != strings[i] {
-			t.Fatal("Fatal: creating and combining returned invalid data")
+		created, err := Create(minimum[i], shares[i], strings[i])
+		if err != nil {
+			t.Fatal("Fatal: creating: ", err)
+		}
+		combined, err := Combine(created)
+		if err != nil {
+			t.Fatal("Fatal: combining: ", err)
+		}
+		if combined != strings[i] {
+			t.Fatal("Fatal: combining returned invalid data")
 		}
 	}
 }
@@ -31,7 +39,11 @@ func TestLibraryCombine(t *testing.T) {
 		"j8-Y4_7CJvL8aHxc8WMMhP_K2TEsOkxIHb7hBcwIBOo=T5-EOvAlzGMogdPawv3oK88rrygYFza3KSki2q8WEgs=",
 	}
 
-	if Combine(shares) != "test-pass" {
+	combined, err := Combine(shares)
+	if err != nil {
+		t.Fatal("Fatal: combining: ", err)
+	}
+	if combined != "test-pass" {
 		t.Fatal("Failed library cross-language check")
 	}
 }
