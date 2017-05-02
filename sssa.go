@@ -5,6 +5,15 @@ import (
 	"math/big"
 )
 
+var (
+	ErrCannotRequireMoreShares = errors.New("cannot require more shares then existing")
+	ErrOneOfTheSharesIsInvalid = errors.New("one of the shares is invalid")
+)
+
+const (
+	DefaultPrimeStr = "115792089237316195423570985008687907853269984665640564039457584007913129639747"
+)
+
 /**
  * Returns a new arary of secret shares (encoding x,y pairs as base64 strings)
  * created by Shamir's Secret Sharing Algorithm requring a minimum number of
@@ -15,14 +24,14 @@ func Create(minimum int, shares int, raw string) ([]string, error) {
 	// the original polynomial in our current setup, therefore it doesn't make
 	// sense to generate fewer shares than are needed to reconstruct the secret.
 	if minimum > shares {
-		return []string{""}, errors.New("cannot require more shares then existing")
+		return []string{""}, ErrCannotRequireMoreShares
 	}
 
 	// Convert the secret to its respective 256-bit big.Int representation
 	var secret []*big.Int = splitByteToInt([]byte(raw))
 
 	// Set constant prime across the package
-	prime, _ = big.NewInt(0).SetString("115792089237316195423570985008687907853269984665640564039457584007913129639747", 10)
+	prime, _ = big.NewInt(0).SetString(DefaultPrimeStr, 10)
 
 	// List of currently used numbers in the polynomial
 	var numbers []*big.Int = make([]*big.Int, 0)
@@ -107,13 +116,13 @@ func Combine(shares []string) (string, error) {
 	var secrets [][][]*big.Int = make([][][]*big.Int, len(shares))
 
 	// Set constant prime
-	prime, _ = big.NewInt(0).SetString("115792089237316195423570985008687907853269984665640564039457584007913129639747", 10)
+	prime, _ = big.NewInt(0).SetString(DefaultPrimeStr, 10)
 
 	// For each share...
 	for i := range shares {
 		// ...ensure that it is valid...
 		if IsValidShare(shares[i]) == false {
-			return "", errors.New("one of the shares is invalid")
+			return "", ErrOneOfTheSharesIsInvalid
 		}
 
 		// ...find the number of parts it represents...
@@ -188,7 +197,7 @@ func Combine(shares []string) (string, error) {
 **/
 func IsValidShare(candidate string) bool {
 	// Set constant prime across the package
-	prime, _ = big.NewInt(0).SetString("115792089237316195423570985008687907853269984665640564039457584007913129639747", 10)
+	prime, _ = big.NewInt(0).SetString(DefaultPrimeStr, 10)
 
 	if len(candidate)%88 != 0 {
 		return false
