@@ -20,6 +20,16 @@ const (
  * share to recreate, of length shares, from the input secret raw as a string
 **/
 func Create(minimum int, shares int, raw string) ([]string, error) {
+	return CreateFromBytes(minimum, shares, []byte(raw))
+}
+
+/**
+ * Returns a new arary of secret shares (encoding x,y pairs as base64 strings)
+ * created by Shamir's Secret Sharing Algorithm requring a minimum number of
+ * share to recreate, of length shares, from the input secret raw as an array
+ * bytes
+**/
+func CreateFromBytes(minimum int, shares int, raw []byte) ([]string, error) {
 	// Verify minimum isn't greater than shares; there is no way to recreate
 	// the original polynomial in our current setup, therefore it doesn't make
 	// sense to generate fewer shares than are needed to reconstruct the secret.
@@ -28,7 +38,7 @@ func Create(minimum int, shares int, raw string) ([]string, error) {
 	}
 
 	// Convert the secret to its respective 256-bit big.Int representation
-	var secret []*big.Int = splitByteToInt([]byte(raw))
+	var secret []*big.Int = splitByteToInt(raw)
 
 	// Set constant prime across the package
 	prime, _ = big.NewInt(0).SetString(DefaultPrimeStr, 10)
@@ -110,7 +120,7 @@ func Create(minimum int, shares int, raw string) ([]string, error) {
  *       or more are passed to this function. Passing thus does not affect it
  *       Passing fewer however, simply means that the returned secret is wrong.
 **/
-func Combine(shares []string) (string, error) {
+func CombineAsBytes(shares []string) ([]byte, error) {
 	// Recreate the original object of x, y points, based upon number of shares
 	// and size of each share (number of parts in the secret).
 	var secrets [][][]*big.Int = make([][][]*big.Int, len(shares))
@@ -122,7 +132,7 @@ func Combine(shares []string) (string, error) {
 	for i := range shares {
 		// ...ensure that it is valid...
 		if IsValidShare(shares[i]) == false {
-			return "", ErrOneOfTheSharesIsInvalid
+			return []byte(""), ErrOneOfTheSharesIsInvalid
 		}
 
 		// ...find the number of parts it represents...
@@ -183,7 +193,21 @@ func Combine(shares []string) (string, error) {
 	}
 
 	// ...and return the result!
-	return string(mergeIntToByte(secret)), nil
+	return mergeIntToByte(secret), nil
+}
+
+/**
+ * Takes a string array of shares encoded in base64 created via Shamir's
+ * Algorithm; each string must be of equal length of a multiple of 88 characters
+ * as a single 88 character share is a pair of 256-bit numbers (x, y).
+ *
+ * Note: the polynomial will converge if the specified minimum number of shares
+ *       or more are passed to this function. Passing thus does not affect it
+ *       Passing fewer however, simply means that the returned secret is wrong.
+**/
+func Combine(shares []string) (string, error) {
+	res, err := CombineAsBytes(shares)
+	return string(res), err
 }
 
 /**
