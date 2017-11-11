@@ -6,7 +6,6 @@ go:
     - 1.5
     - tip
 install:
-    - go get -t ./...
     - go get -u github.com/golang/lint/golint
 script:
     - golint
