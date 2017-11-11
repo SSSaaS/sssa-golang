@@ -5,6 +5,9 @@ go:
     - 1.4
     - 1.5
     - tip
+install:
+    - go get -t ./...
+    - go get github.com/golang/lint/golint
 script:
     - golint
     - go test
