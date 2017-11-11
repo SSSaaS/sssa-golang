@@ -29,16 +29,16 @@ func random() *big.Int {
  * significant bit is zero.
 **/
 func splitByteToInt(secret []byte) []*big.Int {
-	hex_data := hex.EncodeToString(secret)
-	count := int(math.Ceil(float64(len(hex_data)) / 64.0))
+	hexData := hex.EncodeToString(secret)
+	count := int(math.Ceil(float64(len(hexData)) / 64.0))
 
 	result := make([]*big.Int, count)
 
 	for i := 0; i < count; i++ {
-		if (i+1)*64 < len(hex_data) {
-			result[i], _ = big.NewInt(0).SetString(hex_data[i*64:(i+1)*64], 16)
+		if (i+1)*64 < len(hexData) {
+			result[i], _ = big.NewInt(0).SetString(hexData[i*64:(i+1)*64], 16)
 		} else {
-			data := strings.Join([]string{hex_data[i*64:], strings.Repeat("0", 64-(len(hex_data)-i*64))}, "")
+			data := strings.Join([]string{hexData[i*64:], strings.Repeat("0", 64-(len(hexData)-i*64))}, "")
 			result[i], _ = big.NewInt(0).SetString(data, 16)
 		}
 	}
@@ -51,13 +51,13 @@ func splitByteToInt(secret []byte) []*big.Int {
  * least significant nulls
 **/
 func mergeIntToByte(secret []*big.Int) []byte {
-	var hex_data = ""
+	var hexData = ""
 	for i := range secret {
 		tmp := fmt.Sprintf("%x", secret[i])
-		hex_data += strings.Join([]string{strings.Repeat("0", (64 - len(tmp))), tmp}, "")
+		hexData += strings.Join([]string{strings.Repeat("0", (64 - len(tmp))), tmp}, "")
 	}
 
-	result, _ := hex.DecodeString(hex_data)
+	result, _ := hex.DecodeString(hexData)
 	result = bytes.TrimRight(result, "\x00")
 
 	return result
@@ -70,7 +70,7 @@ func mergeIntToByte(secret []*big.Int) []byte {
 **/
 func evaluatePolynomial(polynomial []*big.Int, value *big.Int) *big.Int {
 	last := len(polynomial) - 1
-	var result *big.Int = big.NewInt(0).Set(polynomial[last])
+	var result = big.NewInt(0).Set(polynomial[last])
 
 	for s := last - 1; s >= 0; s-- {
 		result = result.Mul(result, value)
